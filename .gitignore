@@ -1,0 +1,66 @@
+# =========================
+# Go build artifacts
+# =========================
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+dist/
+build/
+
+# =========================
+# Go workspace files
+# =========================
+go.work
+go.work.sum
+
+# =========================
+# Dependency cache (optional)
+# =========================
+vendor/
+
+# =========================
+# Environment variables / secrets
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# IDE / Editor files
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# Test / coverage reports
+# =========================
+coverage.out
+coverage.html
+*.coverprofile
+
+# =========================
+# Local config overrides
+# =========================
+config.local.yaml
+config.local.yml
+config.local.json
