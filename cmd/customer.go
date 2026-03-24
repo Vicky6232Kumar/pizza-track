@@ -1,42 +1,57 @@
-package cmd
+package main
+
+import (
+	"log/slog"
+	"net/http"
+	"pizza-tracking/internal/models"
+
+	"github.com/gin-gonic/gin"
+)
 
 type OrderFormData struct {
 }
 
 type OrderRequest struct {
-	Name    string             `form:"name" binding:"required; max=100, min=2"`
-	Phone   string             `form:"phone" binding:"required; max=15, min=10"`
-	Address string             `form:"address" binding:"required; max=255, min=5"`
-	Items   []OrderItemRequest `form:"items" binding:"required"`
+	Name    string
+	Phone   string
+	Address string
+	Items   []OrderItemRequest
 }
 
 type OrderItemRequest struct {
-	Size        string `form:"size" binding:"required"`
-	Pizza       string `form:"pizza" binding:"required"`
-	Quantity    int    `form:"quantity" binding:"required"`
-	Instruction string `form:"instruction" binding:"required"`
+	Size        string
+	Pizza       string
+	Quantity    int
+	Instruction string
 }
 
-
 // This handler if for the customer to place a new order
-func (h *Handler) HandleNewOrderPost(c *gin.Context){
+func (h *Handler) HandleNewOrderPost(c *gin.Context) {
 	var form OrderRequest
 
-	if err := c.ShouldBind(&form); err :=nil{
+	if err := c.ShouldBind(&form); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-
-	order : models.Order{
-		CustomerName: form.Name,
-		phone: form.Phone,
-		Address: form.Address,
-		Status: models.order[0],
-		Item: form.Items
+	orderItems := make([]models.OrderItem, len(form.Items))
+	for i := range orderItems {
+		orderItems[i].Size = form.Items[i].Size
+		orderItems[i].Pizza = form.Items[i].Pizza
+		orderItems[i].Quantity = form.Items[i].Quantity
+		orderItems[i].Instruction = form.Items[i].Instruction
 	}
 
-	if err := h.orders.CreateOrder(&order); err != nil{
+	order :=
+		models.Order{
+			CustomerName: form.Name,
+			Phone:        form.Phone,
+			Address:      form.Address,
+			Status:       models.OrderStatuses[0],
+			Item:         orderItems,
+		}
+
+	if err := h.orders.CreateOrder(&order); err != nil {
 		slog.Error("Failed to create order", "error", err)
 		c.String(http.StatusInternalServerError, "Failed to create order")
 		return
@@ -47,4 +62,23 @@ func (h *Handler) HandleNewOrderPost(c *gin.Context){
 	// send a generic order data
 	c.JSON(http.StatusOK, gin.H{"message": "Order created successfully", "orderId": order.ID})
 
+}
+
+func (h *Handler) HandleOrderGet(c *gin.Context) {
+	orderId := c.Param("id")
+
+	if orderId == "" {
+		c.String(http.StatusBadRequest, "OrderId not found")
+		return
+	}
+
+	order, err := h.orders.GetOrder(orderId)
+	if err != nil {
+		c.String(http.StatusNotFound, "Order not found", err)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"order": order,
+	})
 }

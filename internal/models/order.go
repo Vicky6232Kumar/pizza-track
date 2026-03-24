@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	order = []string{"Order Placed", "Preparing", "Baking", "Quality Check", "Out for Delivery", "Delivered"}
+	OrderStatuses = []string{"Order Placed", "Preparing", "Baking", "Quality Check", "Out for Delivery", "Delivered"}
 )
 
 type OrderModel struct {
@@ -54,6 +54,6 @@ func (o *OrderModel) CreateOrder(order *Order) error {
 
 func (o *OrderModel) GetOrder(id string) (*Order, error) {
 	var order Order
-	err := o.DB.Preload("Items").First(&order, "id = ?", id).Error
+	err := o.DB.Preload("Item").First(&order, "id = ?", id).Error
 	return &order, err
 }
