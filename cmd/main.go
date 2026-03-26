@@ -31,7 +31,9 @@ func main() {
 		})
 	})
 
-	setUpRoutes(router, h)
+	sessionStore := setupSessionStore(dbModel.DB, []byte(cfg.SessionSecrectKey))
+
+	setUpRoutes(router, h, sessionStore)
 
 	slog.Info("Server starting", "url", "http://localhost:"+cfg.Port)
 	router.Run(":" + cfg.Port)
