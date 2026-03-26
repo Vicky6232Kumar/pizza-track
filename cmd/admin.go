@@ -18,6 +18,8 @@ func (h *Handler) HandlerOrderPut(c *gin.Context) {
 		return
 	}
 
+	h.notificationManager.Notify("order:"+orderId, "order_updated")
+
 	c.JSON(http.StatusOK, map[string]string{
 		"message": "Successfully updated the status",
 	})
