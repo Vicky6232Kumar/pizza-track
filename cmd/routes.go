@@ -19,4 +19,11 @@ func setUpRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
 		router.POST("/logout", h.HandleUserLogout)
 	}
 
+	adminProtectedRoute := router.Group("/admin")
+	adminProtectedRoute.Use(h.AuthMiddleware())
+	{
+		adminProtectedRoute.POST("/order/:id/update", h.HandleOrderDelete)
+		adminProtectedRoute.POST("/order/:id/delete", h.HandleOrderDelete)
+	}
+
 }
