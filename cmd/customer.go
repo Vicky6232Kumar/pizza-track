@@ -59,6 +59,7 @@ func (h *Handler) HandleNewOrderPost(c *gin.Context) {
 
 	slog.Info("Order created successfully", "orderId", order.ID)
 
+	h.notificationManager.Notify("admin:new_orders:", "new_order")
 	// send a generic order data
 	c.JSON(http.StatusOK, gin.H{"message": "Order created successfully", "orderId": order.ID})
 

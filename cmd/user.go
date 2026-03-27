@@ -36,7 +36,7 @@ func (h *Handler) HandleUserLogin(c *gin.Context) {
 }
 
 func (h *Handler) HandleUserLogout(c *gin.Context) {
-	if err := clearSession(c); err != nil {
+	if err := ClearSession(c); err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}

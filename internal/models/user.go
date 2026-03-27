@@ -13,10 +13,12 @@ type UserModel struct {
 
 type User struct {
 	ID       string `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
-	UserName string `gorm:"column:userName;uniqueIndex;not null"`
 	Password string `gorm:"not null"`
 	Name     string `gorm:"size:60;not null"`
+	Email    string `gorm:"size:60;not null"`
 }
+
+// oviously other details like address, favioustes and all model will there
 
 func (u *UserModel) AuthenticateUser(userName, password string) (*User, error) {
 	var user User
