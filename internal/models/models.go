@@ -19,7 +19,7 @@ func InitDB(dataSourceName string) (*DBModel, error) {
 		return nil, fmt.Errorf("Failed to connect to database: %v", err)
 	}
 
-	err = db.AutoMigrate(&Order{}, &OrderItem{})
+	err = db.AutoMigrate(&Order{}, &OrderItem{}, &User{}, &Restaurants{}, &RestaurantsMenu{})
 	if err != nil {
 		return nil, fmt.Errorf("Failed to migrate database: %v", err)
 	}
