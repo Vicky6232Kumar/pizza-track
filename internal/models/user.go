@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -15,10 +16,32 @@ type User struct {
 	ID       string `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
 	Password string `gorm:"not null"`
 	Name     string `gorm:"size:60;not null"`
-	Email    string `gorm:"size:60;not null"`
+	Email    string `gorm:"size:60;not null;unique"`
 }
 
 // oviously other details like address, favioustes and all model will there
+
+func (u *UserModel) CreateUser(userData *User) (string, string, error) {
+	// hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userData.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", "", errors.New("Internal server error")
+	}
+
+	userData.Password = string(hashedPassword)
+
+	if err := u.DB.Create(&userData).Error; err != nil {
+
+		// handle duplicate email
+		if strings.Contains(err.Error(), "duplicate key") {
+			return "", "", errors.New("Email already exists")
+		}
+
+		return "", "", errors.New("internal server error")
+	}
+
+	return userData.Email, userData.ID, nil
+}
 
 func (u *UserModel) AuthenticateUser(userName, password string) (*User, error) {
 	var user User

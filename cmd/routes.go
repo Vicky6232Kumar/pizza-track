@@ -9,7 +9,8 @@ func setUpRoutes(router *gin.Engine, h *Handler, store sessions.Store) {
 	router.Use(sessions.Sessions("pizza-tracker", store))
 	// router.GET("/", )
 
-	router.POST("/login", h.HandleUserLogin)
+	router.POST("/user/login", h.HandleUserLogin)
+	router.POST("/user/create", h.UserRegistration)
 
 	userProtectedRoute := router.Group("")
 	userProtectedRoute.Use(h.AuthMiddleware())
