@@ -10,10 +10,10 @@ type RestaurantModel struct {
 	DB *gorm.DB
 }
 
-type Resturants struct {
+type Restaurants struct {
 	ID        string `gorm:"type:uuid;primaryKey;default:gen_random_uuid()" json:"id"`
 	Name      string `gorm:"size:200"`
-	PhoneNo   int
+	PhoneNo   string
 	Email     string            `gorm:"size:60"`
 	Location  string            `gorm:"size:200"`
 	IsOpen    bool              `gorm:"default:true"`
